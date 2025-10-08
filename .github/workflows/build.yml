@@ -2,7 +2,7 @@ name: lab1_programming_3s
 
 on:
   push:
-    branches: [ main ] # Запускать при коммите в ветку main
+    branches: [ main ]
 
 jobs:
   build-ubuntu:
@@ -29,7 +29,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ubuntu-package
-        path: build/*.tar.gz  # или .deb, .zip — зависит от CPack
+        path: build/*.deb 
 
   build-macos:
     runs-on: macos-latest
@@ -55,7 +55,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: macos-package
-        path: build/*.dmg  # или .pkg — зависит от CPack
+        path: build/*.dmg 
 
   release:
     needs: [build-ubuntu, build-macos]
