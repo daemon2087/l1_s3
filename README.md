@@ -1,0 +1,1 @@
+# Шаблон настройки GitHub Actions
