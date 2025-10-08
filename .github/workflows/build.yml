@@ -1,0 +1,45 @@
+name: lab1_programming_3s
+
+on:
+  push:
+    branches: [ main ] # Запускать при коммите в ветку main
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest # Выбираем первую ОС
+    steps:
+    - uses: actions/checkout@v4 # Получаем код
+    
+    - name: Install Boost # Установка зависимостей (Boost)
+      run: sudo apt-get install libboost-unit-test-dev
+
+    - name: Configure CMake
+      run: cmake -B build
+
+    - name: Build Project
+      run: cmake --build build
+
+    - name: Run Tests
+      run: ctest --test-dir build # Запуск тестов
+
+    - name: Package Project # Создание пакета (хотя CPack требует настройки для Ubuntu)
+      run: cmake --build build --target package
+  build-macos:
+    runs-on: macos-latest  # Выбираем вторую ОС
+    steps:
+    - uses: actions/checkout@v4 # Получаем код
+      
+    - name: Install Boost # Установка зависимостей (Boost)
+      run: brew install boost
+
+    - name: Configure CMake
+      run: cmake -B build
+
+    - name: Build Project
+      run: cmake --build build
+
+    - name: Run Tests
+      run: ctest --test-dir build # Запуск тестов
+
+    - name: Package Project 
+      run: cmake --build build --target package

@@ -64,8 +64,14 @@ set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_CONTACT pdiv@tpu.ru)
 
-set(CPACK_PACKAGE_CONTACT example@example.com)
+# Устанавливаем генератор CPack в зависимости от ОС
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(CPACK_GENERATOR "DEB")
+elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set(CPACK_GENERATOR "DragNDrop")
+endif()
 
 include(CPack)
 
