@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v4 # Получаем код
     
     - name: Install Boost # Установка зависимостей (Boost)
-      run: sudo apt-get install libboost-unit-test-dev
+      run: sudo apt-get install libboost-test-dev -y
 
     - name: Configure CMake
       run: cmake -B build
