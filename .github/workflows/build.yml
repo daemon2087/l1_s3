@@ -2,6 +2,8 @@ name: lab1_programming_3s
 
 on:
   push:
+    tags:
+      - 'v*.*.*'
     branches: [ main ]
 
 jobs:
