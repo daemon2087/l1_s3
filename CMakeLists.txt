@@ -55,8 +55,6 @@ else ()
     )
 endif()
 
-
-
 install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
@@ -70,7 +68,7 @@ set(CPACK_PACKAGE_CONTACT pdiv@tpu.ru)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(CPACK_GENERATOR "DEB")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    set(CPACK_GENERATOR "DragNDrop")
+    set(CPACK_GENERATOR "TGZ")
 endif()
 
 include(CPack)

@@ -1,71 +1,86 @@
-name: lab1_programming_3s
+name: "Lab YAML file"
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
-  build-ubuntu:
+  linux:
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Boost
         run: sudo apt-get install libboost-test-dev -y
+
       - name: Configure CMake
         run: cmake -B build
+
       - name: Build Project
         run: cmake --build build
+
       - name: Run Tests
         run: ctest --test-dir build
+
       - name: Package Project
         run: cmake --build build --target package
+
       - name: Upload Ubuntu artifact
         uses: actions/upload-artifact@v4
         with:
           name: ubuntu-package
           path: build/*.deb
 
-  build-macos:
+  macos:
     runs-on: macos-latest
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Boost
         run: brew install boost
+
       - name: Configure CMake
         run: cmake -B build
+
       - name: Build Project
         run: cmake --build build
+
       - name: Run Tests
         run: ctest --test-dir build
+
       - name: Package Project
         run: cmake --build build --target package
+
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-package
-          path: build/*.dmg
+          path: build/*.tar.gz
 
   release:
-    needs: [build-ubuntu, build-macos]
+    needs: [linux, macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: ubuntu-package
           path: release/
+
       - uses: actions/download-artifact@v4
         with:
           name: macos-package
           path: release/
-      - name: List files
-        run: ls -R release/
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Release ${{ github.ref_name }}"
+          name: "v${{ github.ref_name }}"
           tag_name: ${{ github.ref_name }}
-          body: "Автоматический релиз Ubuntu + macOS"
+          body: "Release for Linux and macOS"
           files: release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
