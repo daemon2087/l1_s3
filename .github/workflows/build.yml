@@ -6,11 +6,11 @@ on:
 
 jobs:
   build-ubuntu:
-    runs-on: ubuntu-latest # Выбираем первую ОС
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4 # Получаем код
-    
-    - name: Install Boost # Установка зависимостей (Boost)
+    - uses: actions/checkout@v4
+
+    - name: Install Boost
       run: sudo apt-get install libboost-test-dev -y
 
     - name: Configure CMake
@@ -20,16 +20,23 @@ jobs:
       run: cmake --build build
 
     - name: Run Tests
-      run: ctest --test-dir build # Запуск тестов
+      run: ctest --test-dir build
 
-    - name: Package Project # Создание пакета (хотя CPack требует настройки для Ubuntu)
+    - name: Package Project
       run: cmake --build build --target package
+
+    - name: Upload Ubuntu artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ubuntu-package
+        path: build/*.tar.gz  # или .deb, .zip — зависит от CPack
+
   build-macos:
-    runs-on: macos-latest  # Выбираем вторую ОС
+    runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v4 # Получаем код
-      
-    - name: Install Boost # Установка зависимостей (Boost)
+    - uses: actions/checkout@v4
+
+    - name: Install Boost
       run: brew install boost
 
     - name: Configure CMake
@@ -39,7 +46,45 @@ jobs:
       run: cmake --build build
 
     - name: Run Tests
-      run: ctest --test-dir build # Запуск тестов
+      run: ctest --test-dir build
 
-    - name: Package Project 
+    - name: Package Project
       run: cmake --build build --target package
+
+    - name: Upload macOS artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-package
+        path: build/*.dmg  # или .pkg — зависит от CPack
+
+  release:
+    needs: [build-ubuntu, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Ubuntu artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ubuntu-package
+        path: release/
+
+    - name: Download macOS artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: macos-package
+        path: release/
+
+    - name: List files for debugging
+      run: ls -R release/
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: "Release ${{ github.ref_name }}"
+        tag_name: ${{ github.ref_name }}
+        body: |
+          🚀 Автоматический релиз
+          ✅ Ubuntu и macOS сборки успешно завершены.
+        files: |
+          release/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
