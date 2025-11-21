@@ -18,7 +18,17 @@ jobs:
         run: sudo apt-get install libboost-test-dev -y
 
       - name: Configure CMake
-        run: cmake -B build
+        shell: bash
+        run: |
+          VERSION=""
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          if [[ -n "${VERSION}" ]]; then
+            cmake -B build -DPROJECT_VERSION_OVERRIDE="${VERSION}"
+          else
+            cmake -B build
+          fi
 
       - name: Build Project
         run: cmake --build build
@@ -45,7 +55,17 @@ jobs:
         run: brew install boost
 
       - name: Configure CMake
-        run: cmake -B build
+        shell: bash
+        run: |
+          VERSION=""
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          if [[ -n "${VERSION}" ]]; then
+            cmake -B build -DPROJECT_VERSION_OVERRIDE="${VERSION}"
+          else
+            cmake -B build
+          fi
 
       - name: Build Project
         run: cmake --build build
@@ -82,7 +102,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "v${{ github.ref_name }}"
+          name: ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body: "Release for Linux and macOS"
           files: release/*
