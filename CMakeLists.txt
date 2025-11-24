@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
-set(DEFAULT_PROJECT_VERSION "0.0.${PATCH_VERSION}")
+## Default project version. You can override with -DPROJECT_VERSION_OVERRIDE=... when running cmake
+set(DEFAULT_PROJECT_VERSION "1.0.5")
 set(PROJECT_VERSION_OVERRIDE "${DEFAULT_PROJECT_VERSION}" CACHE STRING "Override project version")
 
 project(helloworld VERSION ${PROJECT_VERSION_OVERRIDE})

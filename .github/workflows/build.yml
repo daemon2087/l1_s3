@@ -106,5 +106,4 @@ jobs:
           tag_name: ${{ github.ref_name }}
           body: "Release for Linux and macOS"
           files: release/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
