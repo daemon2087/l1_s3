@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 ## Determine project version: prefer Git tag, fall back to default. The
 ## resulting value is stored in the cache variable `PROJECT_VERSION_OVERRIDE`
 ## so it can still be overridden by `-DPROJECT_VERSION_OVERRIDE=...`.
-set(DEFAULT_PROJECT_VERSION "0.0.1 beta")
+set(DEFAULT_PROJECT_VERSION "0.0.1")
 
 add_executable(helloworld_cli main.cpp)
 add_library(helloworld lib.cpp)
